@@ -151,7 +151,7 @@ func (s *sqlMapStore) GetCoordinates(ctx context.Context, mapId string) ([]*v1.M
 		"map", mapId,
 	)...)
 	var records []mapCoordinate
-	err = s.db.Where("game_map_id = ?", mapId).Find(&records).Error
+	err = s.db.Where(mapCoordinate{GameMapID: mapId}, "game_map_id").Find(&records).Error
 	if err != nil {
 		s.log.Error("failed to fetch map coordinates", info.LoggingContext(
 			"error", err,
@@ -159,6 +159,11 @@ func (s *sqlMapStore) GetCoordinates(ctx context.Context, mapId string) ([]*v1.M
 		)...)
 		return nil, err
 	}
+
+	s.log.Debug("fetched map coordinates", info.LoggingContext(
+		"map", mapId,
+		"count", len(records),
+	)...)
 
 	var pb []*v1.MapCoordinateDetail
 	for _, record := range records {
@@ -176,7 +181,6 @@ func (s *sqlMapStore) GetCoordinates(ctx context.Context, mapId string) ([]*v1.M
 	}
 
 	return pb, nil
-
 }
 
 func (s *sqlMapStore) UpdateCoordinate(ctx context.Context, coordinate *v1.MapCoordinateDetail) error {

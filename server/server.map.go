@@ -340,7 +340,7 @@ func (s *defaultMapServer) GetMapDetail(ctx context.Context, req *v1.GetMapReque
 		return nil, err
 	}
 
-	coords, err := s.mapsDb.GetCoordinates(ctx, gameMap.GameUid)
+	coords, err := s.mapsDb.GetCoordinates(ctx, gameMap.Uid)
 	if err != nil {
 		s.log.Error("failed to get map coordinates", info.LoggingContext("error", err)...)
 		return nil, err
