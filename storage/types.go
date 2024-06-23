@@ -235,7 +235,7 @@ func MapCoordinateRecordFromProto(src *v1.MapCoordinateDetail) (*mapCoordinate, 
 	return &mapCoordinate{
 		ID:               src.Uid,
 		GameID:           src.GameUid,
-		GameMapID:        src.GameUid,
+		GameMapID:        src.MapUid,
 		X:                src.Position.X,
 		Y:                src.Position.Y,
 		Type:             v1.MapCoordinateDetail_CoordinateType_name[int32(src.Type)],
