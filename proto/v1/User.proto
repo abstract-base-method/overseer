@@ -1,0 +1,66 @@
+syntax = "proto3";
+
+package overseer.v1;
+
+option go_package = "github.com/abstract-base-method/overseer/proto/v1";
+
+// This service is responsible for managing users and actors.
+service Users {
+  // This registers a new user within the system.
+  rpc RegisterUser(User) returns (User) {}
+  // This registers a new actor within the system tied to a user.
+  rpc RegisterActor(RegisterActorRequest) returns (Actor) {}
+  // This retrieves a user by one of their Actors.
+  rpc GetUser (Actor) returns (User) {}
+  // This retrieves an actor by their ID.
+  rpc GetActor (GetActorRequest) returns (Actor) {}
+  // retrieves all registered actors for a user
+  rpc GetActors(User) returns (Actors) {}
+}
+
+message Actors {
+  repeated Actor actors = 1;
+}
+
+message RegisterActorRequest {
+  string user_id = 1;
+  string source_identity = 2;
+  Actor.Source source = 3;
+  ActorMetadata metadata = 4;
+}
+
+message ActorMetadata {
+  oneof value {
+    ActorSourceSystem system = 1;
+    ActorSourceDiscord discord = 2;
+  }
+}
+
+message GetActorRequest {
+  string actor_id = 1;
+}
+
+message Actor {
+  string uid = 1;
+  string source_identity = 2;
+  Source source = 3;
+  ActorMetadata metadata = 4;
+
+  enum Source {
+    SYSTEM = 0;
+    APP_DISCORD = 1;
+  }
+}
+
+message ActorSourceSystem {
+  string instanceId = 1;
+}
+
+message ActorSourceDiscord {
+  string guild = 1;
+  string channel = 2;
+}
+
+message User {
+  string uid = 1;
+}

@@ -1,0 +1,138 @@
+syntax = "proto3";
+import "User.proto";
+import "Game.proto";
+
+package overseer.v1;
+
+option go_package = "github.com/abstract-base-method/overseer/proto/v1";
+
+service Events {
+  rpc GetEvent(GetEventRequest) returns (EventRecord);
+  rpc Submit(Event) returns (EventReceipts);
+  rpc Subscribe(stream Event) returns (stream EventReceipt);
+}
+
+message EventOriginDiscord {
+  string guild = 1;
+  string channel = 2;
+}
+
+message EventOriginSystem {
+  string node_id = 1;
+}
+
+message GetEventRequest {
+  string uid = 1;
+}
+
+message EventRecord {
+  string uid = 1;
+  string game_uid = 2;
+  Event payload = 3;
+  repeated EventReceipt receipts = 4;
+}
+
+message Event {
+  string game_uid = 1;
+  Actor actor = 2;
+  oneof origin {
+    EventOriginDiscord discord = 100;
+    EventOriginSystem system = 199;
+  }
+  oneof payload {
+    NewGameEvent new_game = 200;
+    InteractionEvent interaction = 201;
+  }
+}
+
+message NewGameEvent {
+  GameTheme theme = 1;
+  string name = 2;
+  repeated Actor participants = 3;
+}
+
+message InteractionEvent {
+  oneof interaction {
+    ActionInteraction action = 100;
+    MovementInteraction movement = 101;
+    UtteranceInteraction utterance = 102;
+  }
+}
+
+message ActionInteraction {
+  string action = 1;
+}
+
+message MovementInteraction {
+  string direction = 1;
+}
+
+message UtteranceInteraction {
+  string content = 1;
+  oneof utterance {
+    TableUtterance table = 100;
+    DungeonMasterUtterance dungeon_master = 101;
+    PlayerUtterance player = 102;
+    PlayersUtterance players = 103;
+  }
+}
+
+message TableUtterance {
+  bool whisper = 1;
+}
+
+message DungeonMasterUtterance {
+  bool whisper = 2;
+}
+
+message PlayerUtterance {
+  Actor target = 1;
+  bool whisper = 2;
+}
+
+message PlayersUtterance {
+  repeated Actor targets = 1;
+  bool whisper = 2;
+}
+
+message EventReceipts {
+  repeated EventReceipt receipts = 1;
+}
+
+message EventReceipt {
+  string uid = 1;
+  string game_uid = 2;
+  string event_uid = 3;
+  oneof effect {
+    ErrorEffect error = 100;
+    Acknowledgement ack = 101;
+    GameStateEffect game_state = 102;
+    UtteranceEffect utterance = 104;
+  }
+}
+
+message Acknowledgement {
+  optional string message = 1;
+}
+
+message ErrorEffect {
+  Type type = 1;
+  string message = 2;
+
+  enum Type {
+    UNKNOWN = 0;
+    INVALID = 1;
+    UNAUTHORIZED = 2;
+    UNIMPLEMENTED = 3;
+    INTERNAL = 4;
+  }
+}
+
+message GameStateEffect {
+}
+
+message UtteranceEffect {
+  string actor = 1;
+  string content = 2;
+  bool whisper = 3;
+}

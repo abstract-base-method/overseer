@@ -1,0 +1,9 @@
+Given a {{.Theme}} Dungeons and Dragons character called {{.Name}} who has the following stats:
+{{range .Characteristics}}
+	- {{.Type}}: {{.Value}}
+{{end}}
+
+Who is within a part of the map that is {{.LocationTheme}}. The Terrain is {{.DifficultTerrain}}. Their motivation is {{.InternalLore}}. Make sure to respond with only information that can be relayed to the player.
+
+The output should not ask questions for the player, do not ask questions or provide direction, this is an exercise in character creation and world building. Respond only with the lore without additional prose.
+ 

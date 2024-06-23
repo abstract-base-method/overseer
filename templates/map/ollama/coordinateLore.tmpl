@@ -1,0 +1,14 @@
+Given a {{.Theme}} game of Dungeons & Dragons for a place on the map themed like {{.LocationTheme}} build a discription of this location. Important information to know about this place is here are the sprites that exist:
+{{range .SpriteLores}}
+- {{.}}
+{{end}}
+
+Around this location there are the following locations:
+{{range .NeighborLores}}
+- The theme of this location is {{.Theme}} and it is located {{.Direction}} of here. The Lore of this place is: {{.Lore}}. The sprites that exist here are:
+{{range .SpriteLores}}
+  - {{.}}
+{{end}}
+{{end}}
+
+Do not generate any information regarding the character sheet or current stats for a player. This is a world building exercise. Respond only with the lore without additional prose.

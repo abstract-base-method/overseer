@@ -1,0 +1,8 @@
+Given a {{.Theme}} Dungeons and Dragons character called {{.Name}} who has the following stats:
+{{range .Characteristics}}
+	- {{.Type}}: {{.Value}}
+{{end}}
+
+Who is within a part of the map that is {{.LocationTheme}}. The Terrain is {{.DifficultTerrain}} generate a backstory for this character. Be sure include the character's backstory, their motivations, and their goals.
+
+Do not prompt for further input or ask questions this is an exercise in generating a backstory for a character. Do not explicitly mention the character's stats in the backstory. Respond only with the lore without additional prose.

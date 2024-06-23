@@ -1,0 +1,68 @@
+syntax = "proto3";
+import "User.proto";
+
+package overseer.v1;
+
+option go_package = "github.com/abstract-base-method/overseer/proto/v1";
+
+service Games {
+  rpc CreateGame(CreateGameRequest) returns (Game) {}
+  rpc GetGame(GetGameRequest) returns (Game) {}
+  rpc LockGame(LockGameRequest) returns (LockGameResponse) {}
+  rpc UnlockGame(UnlockGameRequest) returns (UnlockGameResponse) {}
+  rpc EndGame(EndGameRequest) returns (EndGameResponse) {}
+}
+
+message CreateGameRequest {
+  string name = 1;
+  GameTheme theme = 2;
+  repeated Actor participants = 3;
+}
+
+enum GameTheme {
+  DEFAULT = 0;
+}
+
+message LockGameRequest {
+  string game_uid = 1;
+  string claim_uid = 2;
+  bool wait = 3;
+  // TODO: do we want a force flag?
+}
+
+message LockGameResponse {
+  string game_uid = 1;
+  bool success = 2;
+}
+
+message UnlockGameRequest {
+  string game_uid = 1;
+  string claim_uid = 2;
+}
+
+message UnlockGameResponse {
+  string game_uid = 1;
+  bool success = 2;
+}
+
+message GetGameRequest {
+  string game_uid = 1;
+}
+
+message EndGameRequest {
+  string game_uid = 1;
+}
+
+message EndGameResponse {
+  string game_uid = 1;
+}
+
+message Game {
+  string uid = 1;
+  string name = 2;
+  GameTheme theme = 3;
+  Actor activeActor = 4;
+  repeated Actor participants = 5;
+  bool initialized = 6;
+  bool completed = 7;
+}

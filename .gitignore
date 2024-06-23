@@ -1,0 +1,7 @@
+build/
+.idea/
+overseer.db
+ollama/
+!templates/map/ollama/
+!generative/ollama
+overseer.yaml

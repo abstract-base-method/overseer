@@ -1,0 +1,116 @@
+syntax = "proto3";
+import "User.proto";
+import "Game.proto";
+
+package overseer.v1;
+
+option go_package = "github.com/abstract-base-method/overseer/proto/v1";
+
+service Maps {
+	rpc CreateMap(CreateMapRequest) returns (Map) {};
+	rpc GetMap(GetMapRequest) returns (Map) {};
+	rpc GetMapDetail(GetMapRequest) returns (MapDetail) {};
+	rpc GetPosition(Actor) returns (MapPosition) {};
+	rpc PeekCoordinate(PeekCoordinateRequest) returns (MapCoordinateDetail) {};
+	rpc PlayerMovement(PlayerMovementRequest) returns (MovementResult) {};
+}
+
+message CreateMapRequest {
+	string game_uid = 1;
+	string name = 2;
+	int64 max_x = 3;
+	int64 max_y = 4;
+	GameTheme theme = 5;
+	repeated Actor actors = 6;
+	float difficult_terrain_chance = 7;
+	float sprite_density = 8;
+}
+
+message GetMapRequest {
+	string uid = 1;
+}
+
+message PlayerMovementRequest {
+	string game_uid = 1;
+	string actor_uid = 2;
+	string sprite_uid = 3;
+	int64 x = 4;
+	int64 y = 5;
+}
+
+message MovementResult {
+	bool success = 1;
+	optional string message = 2;
+}
+
+
+message PeekCoordinateRequest {
+	string game_uid = 1;
+	string map_uid = 2;
+	MapPosition coordinate = 3;
+}
+
+message Map {
+	string uid = 1;
+	string game_uid = 2;
+	string name = 3;
+	int64 max_x = 4;
+	int64 max_y = 5;
+}
+
+message MapDetail {
+	Map map = 1;
+	repeated MapCoordinateDetail coordinates = 2;
+}
+
+message MapPosition {
+	int64 x = 1;
+	int64 y = 2;
+}
+
+message MapCoordinateDetail {
+	string uid = 1;
+	string game_uid = 2;
+	string map_uid = 3;
+	MapPosition position = 4;
+	repeated Actor actors = 5;
+	repeated Sprite sprites = 6;
+	CoordinateType type = 7;
+	bool difficult_terrain = 8;
+	string lore = 9;
+
+	enum CoordinateType {
+		TYPE_UNSPECIFIED = 0;
+		OPEN_FIELD = 1;
+		FOREST = 2;
+		MOUNTAIN = 3;
+		DESERT = 4;
+		SEA = 5;
+		CAVE = 6;
+		CASTLE = 7;
+		CITY = 8;
+	}
+}
+
+// all things in the map are sprites. Sprites with an actor are players of the game.
+message Sprite {
+	string uid = 1;
+	optional Actor actor = 2;
+	repeated Characteristic characteristics = 3;
+	bool is_obstacle = 4;
+	bool is_moveable = 5;
+	string lore_internal = 6;
+	string lore_public = 7;
+}
+
+message Characteristic {
+	Type type = 1;
+	float value = 2;
+	enum Type {
+		TYPE_UNSPECIFIED = 0;
+		HEALTH = 1;
+		ATTACK = 2;
+		DEFENSE = 3;
+		SPEED = 4;
+	}
+}
