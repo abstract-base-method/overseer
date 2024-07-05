@@ -19,6 +19,7 @@ type Configuration struct {
 	MapGeneration              MapGenerationConfiguration `yaml:"mapGeneration" mapstructure:"mapGeneration" json:"mapGeneration"`
 	GenerativeFeaturesProvider GenerativeFeatureProvider  `yaml:"generativeFeaturesProvider" mapstructure:"generativeFeaturesProvider" json:"generativeFeaturesProvider"`
 	Ollama                     OllamaConfiguration        `yaml:"ollama" mapstructure:"ollama" json:"ollama"`
+	Discord                    DiscordConfiguration       `yaml:"discord" mapstructure:"discord" json:"discord"`
 }
 
 type ServerConfiguration struct {
@@ -93,6 +94,10 @@ type OllamaConfiguration struct {
 	Insecure bool        `yaml:"insecure" mapstructure:"insecure" json:"insecure"`
 }
 
+type DiscordConfiguration struct {
+	BotToken string `yaml:"botToken" mapstructure:"botToken" json:"botToken"`
+}
+
 func init() {
 	viper.SetConfigName("overseer")
 	viper.SetConfigType("yaml")
@@ -114,6 +119,7 @@ func init() {
 	viper.SetDefault("ollama.baseUrl", "http://localhost:11434")
 	viper.SetDefault("ollama.model", Llama3.String())
 	viper.SetDefault("ollama.insecure", false)
+	viper.SetDefault("discord.botToken", "")
 
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
