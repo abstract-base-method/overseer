@@ -22,8 +22,14 @@ func (d *defaultDiscordServer) Connect() error {
 		return err
 	}
 
+	session.AddHandler(handlers.Ready)
+	session.AddHandler(handlers.GuildCreate)
 	session.AddHandler(handlers.MessageCreate)
+	session.AddHandler(handlers.InteractionCreate)
+
+	session.Identify.Intents = discordgo.IntentsGuilds
 	session.Identify.Intents = discordgo.IntentsGuildMessages
+	session.Identify.Intents = discordgo.IntentsGuildMessageReactions
 
 	err = session.Open()
 	if err != nil {
