@@ -1,12 +1,13 @@
 package commands
 
 import (
+	"context"
 	"overseer/common"
 
 	"github.com/bwmarrin/discordgo"
 )
 
-var devCommandLog = common.GetLogger("discord.commands.resetCommands")
+var devCommandLog = common.GetLogger("discord.commands.dev")
 var devCommand = &discordgo.ApplicationCommand{
 	Name:        "dev",
 	Description: "execute developer operations",
@@ -19,13 +20,13 @@ var devCommand = &discordgo.ApplicationCommand{
 	},
 }
 
-func devCommandFunc(session *discordgo.Session, event *discordgo.InteractionCreate) {
+func devCommandFunc(ctx context.Context, session *discordgo.Session, event *discordgo.InteractionCreate) {
 	options := event.ApplicationCommandData().Options
 	devCommandLog.Info("dev command executed", "user", event.User.Username, "guild", event.GuildID, "options", options)
 
 	switch options[0].Name {
 	case "commands":
-		devResetCommands(session, event)
+		devResetCommands(ctx, session, event)
 	default:
 		devCommandLog.Error("unknown subcommand", "subcommand", options[0].Name)
 		if err := session.InteractionRespond(event.Interaction, &discordgo.InteractionResponse{
@@ -39,7 +40,7 @@ func devCommandFunc(session *discordgo.Session, event *discordgo.InteractionCrea
 	}
 }
 
-func devResetCommands(session *discordgo.Session, event *discordgo.InteractionCreate) {
+func devResetCommands(ctx context.Context, session *discordgo.Session, event *discordgo.InteractionCreate) {
 	devCommandLog.Info("resetting commands", "user", event.User.Username, "guild", event.GuildID)
 	err := session.InteractionRespond(event.Interaction, &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseChannelMessageWithSource,
